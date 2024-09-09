@@ -22,6 +22,8 @@ ATower::ATower()
 
     // Bind to the overlap event
     RangeSphere->OnComponentBeginOverlap.AddDynamic(this, &ATower::OnEnemyEnterRange);
+    RangeSphere->OnComponentEndOverlap.AddDynamic(this, &ATower::OnEnemyExitRange);
+
 
 }
 
@@ -29,14 +31,35 @@ ATower::ATower()
 void ATower::BeginPlay()
 {
 	Super::BeginPlay();
-	
+    if (AttackType)
+    {
+        AttackTypeSpawned = GetWorld()->SpawnActor<AActor>(AttackType);
+
+        if (AttackTypeSpawned && AttackTypeSpawned->GetClass()->ImplementsInterface(UIAttackType::StaticClass()))
+        {
+            IAttackType = Cast<IIAttackType>(AttackTypeSpawned);
+        }
+    }
 }
 
 // Called every frame
 void ATower::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+    TimeSinceLastAttack -= DeltaTime;
+    if (isBaddiesInRange == true && TimeSinceLastAttack <= 0)
+    {
+        
+        TimeSinceLastAttack = fireRate;
+        GetBaddiesInRange(BaddiesInRange);
 
+        // Si des ennemis sont trouvés, attaquer
+        if (BaddiesInRange.Num() > 0)
+        {
+            ProcessAttack();
+            TimeSinceLastAttack = fireRate;
+        }
+    }
 }
 
 // Called to bind functionality to input
@@ -47,33 +70,52 @@ void ATower::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void ATower::ProcessAttack()
 {
-    // Get all overlapping actors of class Baddie
+	if (IAttackType) // Si le cast réussit
+	{
+		IAttackType->Attack_Implementation(BaddiesInRange);
+	}
+}
+
+void ATower::GetBaddiesInRange(TArray<ABaddies*>& OutBaddies)
+{
+    // Récupérer tous les acteurs qui se chevauchent avec la RangeSphere
     TArray<AActor*> OverlappingActors;
     RangeSphere->GetOverlappingActors(OverlappingActors, ABaddies::StaticClass());
 
+    // Filtrer les acteurs pour trouver les baddies
     for (AActor* Actor : OverlappingActors)
     {
         ABaddies* Baddie = Cast<ABaddies>(Actor);
         if (Baddie)
         {
-            // Implement your attack logic here, e.g., reduce health
-            // Baddie->TakeDamage(DamageAmount);
-            if (GEngine)
-                GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Wassssssuuuup bitconneccccctt !!!"));
+            OutBaddies.Add(Baddie);
         }
     }
 }
 
-void ATower::OnEnemyEnterRange(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
-    UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
-    bool bFromSweep, const FHitResult& SweepResult)
+
+void ATower::OnEnemyEnterRange(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-    // This function is called when an enemy enters the range.
-    // You can choose to trigger an attack here or gather data.
     ABaddies* Baddie = Cast<ABaddies>(OtherActor);
     if (Baddie)
     {
-        // Call attack or another function
-        ProcessAttack();
+        isBaddiesInRange = true;  // Un ennemi est dans la portée
+    }
+}
+
+// Appelé lorsque l'ennemi sort de la portée
+void ATower::OnEnemyExitRange(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+    ABaddies* Baddie = Cast<ABaddies>(OtherActor);
+    if (Baddie)
+    {
+        // Vérifier s'il reste des ennemis dans la portée
+        TArray<AActor*> OverlappingActors;
+        RangeSphere->GetOverlappingActors(OverlappingActors, ABaddies::StaticClass());
+
+        if (OverlappingActors.Num() == 0)
+        {
+            isBaddiesInRange = false;  // Aucun ennemi dans la portée
+        }
     }
 }
