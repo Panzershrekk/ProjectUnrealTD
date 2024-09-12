@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 #include "../IAttackType.h"
+#include "Bullet.h"
 #include "Tower.generated.h"
 
 UCLASS()
@@ -16,14 +17,27 @@ public:
 	// Sets default values for this pawn's properties
 	ATower();
 	void ProcessAttack();
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
 	float range;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
 	float fireRate;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
 	TSubclassOf<AActor> AttackType;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
+	TSubclassOf<ABullet> Bullet;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
+	TArray<USceneComponent*> BulletStartPoint;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	class USphereComponent* RangeSphere;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Turret")
+	USceneComponent* DummyMuzzle;
 
 	UFUNCTION()
 	void GetBaddiesInRange(TArray<ABaddies*>& OutBaddies);

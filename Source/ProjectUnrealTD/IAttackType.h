@@ -19,5 +19,5 @@ class IIAttackType
 public:
     // Expose la fonction Attack aux Blueprints et permet son implémentation
     UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Combat")
-    void Attack(const TArray<ABaddies*>& BaddiesInRange);
+    void Attack(const TArray<ABaddies*>& BaddiesInRange, const TArray<USceneComponent*>& BulletsStartPoints);
 };

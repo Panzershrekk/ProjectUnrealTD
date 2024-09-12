@@ -11,9 +11,6 @@ ATower::ATower()
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-    // Set default range
-    range = 500.0f;
-
     // Create a sphere component to represent the tower's attack range
     RangeSphere = CreateDefaultSubobject<USphereComponent>(TEXT("RangeSphere"));
     RangeSphere->InitSphereRadius(range);
@@ -24,7 +21,12 @@ ATower::ATower()
     RangeSphere->OnComponentBeginOverlap.AddDynamic(this, &ATower::OnEnemyEnterRange);
     RangeSphere->OnComponentEndOverlap.AddDynamic(this, &ATower::OnEnemyExitRange);
 
+    USceneComponent* NewBulletOrigin = CreateDefaultSubobject<USceneComponent>(TEXT("BulletStartPoint1"));
+    NewBulletOrigin->SetupAttachment(RootComponent);
+    BulletStartPoint.Add(NewBulletOrigin);
 
+    DummyMuzzle = CreateDefaultSubobject<USceneComponent>(TEXT("DummyMuzzle"));
+    DummyMuzzle->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned
@@ -39,6 +41,7 @@ void ATower::BeginPlay()
         {
             IAttackType = Cast<IIAttackType>(AttackTypeSpawned);
         }
+        
     }
 }
 
@@ -72,7 +75,9 @@ void ATower::ProcessAttack()
 {
 	if (IAttackType) // Si le cast réussit
 	{
-		IAttackType->Attack_Implementation(BaddiesInRange);
+		IAttackType->Attack_Implementation(BaddiesInRange, BulletStartPoint);
+        ABullet* SpawnedBullet = GetWorld()->SpawnActor<ABullet>(Bullet, BulletStartPoint[0]->GetComponentLocation(), FRotator::ZeroRotator);
+
 	}
 }
 

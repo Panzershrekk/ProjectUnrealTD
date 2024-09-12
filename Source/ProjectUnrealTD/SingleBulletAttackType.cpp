@@ -19,7 +19,7 @@ void ASingleBulletAttackType::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void ASingleBulletAttackType::Attack_Implementation(const TArray<ABaddies*>& BaddiesInRange)
+void ASingleBulletAttackType::Attack_Implementation(const TArray<ABaddies*>& BaddiesInRange, const TArray<USceneComponent*>& BulletsStartPoints)
 {
 	if (GEngine)
 		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("I need more boulettes !!!"));
