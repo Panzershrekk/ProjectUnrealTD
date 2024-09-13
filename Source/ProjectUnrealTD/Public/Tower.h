@@ -36,7 +36,7 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	class USphereComponent* RangeSphere;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Turret")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
 	USceneComponent* DummyMuzzle;
 
 	UFUNCTION()

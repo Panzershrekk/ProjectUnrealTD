@@ -11,22 +11,23 @@ ATower::ATower()
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+
     // Create a sphere component to represent the tower's attack range
     RangeSphere = CreateDefaultSubobject<USphereComponent>(TEXT("RangeSphere"));
     RangeSphere->InitSphereRadius(range);
     RangeSphere->SetCollisionProfileName(TEXT("Trigger"));
-    RangeSphere->SetupAttachment(RootComponent);
 
     // Bind to the overlap event
     RangeSphere->OnComponentBeginOverlap.AddDynamic(this, &ATower::OnEnemyEnterRange);
     RangeSphere->OnComponentEndOverlap.AddDynamic(this, &ATower::OnEnemyExitRange);
 
-    USceneComponent* NewBulletOrigin = CreateDefaultSubobject<USceneComponent>(TEXT("BulletStartPoint1"));
-    NewBulletOrigin->SetupAttachment(RootComponent);
+    RangeSphere->SetupAttachment(RootComponent);
+
+    USceneComponent* NewBulletOrigin = CreateDefaultSubobject<USceneComponent>(TEXT("BulletStartOne"));
+    NewBulletOrigin->SetupAttachment(RangeSphere);
     BulletStartPoint.Add(NewBulletOrigin);
 
-    DummyMuzzle = CreateDefaultSubobject<USceneComponent>(TEXT("DummyMuzzle"));
-    DummyMuzzle->SetupAttachment(RootComponent);
+
 }
 
 // Called when the game starts or when spawned
