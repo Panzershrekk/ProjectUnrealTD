@@ -26,5 +26,5 @@ public:
     virtual void Tick(float DeltaTime) override;
 
     // Implémentation de l'attaque
-    virtual void Attack_Implementation(const TArray<ABaddies*>& BaddiesInRange, const TArray<USceneComponent*>& BulletsStartPoints) override;
+    virtual void Attack_Implementation(const TArray<ABaddies*>& BaddiesInRange, const ATower* tower) override;
 };

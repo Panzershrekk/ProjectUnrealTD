@@ -3,6 +3,7 @@
 
 #include "Tower.h"
 #include "../Baddies.h"
+#include "../IAttackType.h"
 #include "Components/SphereComponent.h"
 
 // Sets default values
@@ -76,9 +77,7 @@ void ATower::ProcessAttack()
 {
 	if (IAttackType) // Si le cast réussit
 	{
-		IAttackType->Attack_Implementation(BaddiesInRange, BulletStartPoint);
-        ABullet* SpawnedBullet = GetWorld()->SpawnActor<ABullet>(Bullet, BulletStartPoint[0]->GetComponentLocation(), FRotator::ZeroRotator);
-
+		IAttackType->Attack_Implementation(BaddiesInRange, this);
 	}
 }
 
@@ -87,7 +86,7 @@ void ATower::GetBaddiesInRange(TArray<ABaddies*>& OutBaddies)
     // Récupérer tous les acteurs qui se chevauchent avec la RangeSphere
     TArray<AActor*> OverlappingActors;
     RangeSphere->GetOverlappingActors(OverlappingActors, ABaddies::StaticClass());
-
+    OutBaddies.Empty();
     // Filtrer les acteurs pour trouver les baddies
     for (AActor* Actor : OverlappingActors)
     {

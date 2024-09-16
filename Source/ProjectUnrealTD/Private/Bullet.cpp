@@ -25,3 +25,8 @@ void ABullet::Tick(float DeltaTime)
 
 }
 
+void ABullet::Setup(AActor* t)
+{
+	target = t;
+}
+

@@ -1,4 +1,6 @@
 ﻿#include "SingleBulletAttackType.h"
+#include "Public/Tower.h"
+#include "Baddies.h"
 
 // Définit les valeurs par défaut
 ASingleBulletAttackType::ASingleBulletAttackType()
@@ -19,8 +21,22 @@ void ASingleBulletAttackType::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void ASingleBulletAttackType::Attack_Implementation(const TArray<ABaddies*>& BaddiesInRange, const TArray<USceneComponent*>& BulletsStartPoints)
+void ASingleBulletAttackType::Attack_Implementation(const TArray<ABaddies*>& BaddiesInRange, const ATower* tower)
 {
-	if (GEngine)
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("I need more boulettes !!!"));
+	/*if (GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Actor Location: %s"), *tower->BulletStartPoint[0]->GetComponentLocation().ToString()));
+	}*/
+
+	ABullet* SpawnedBullet = GetWorld()->SpawnActor<ABullet>(tower->Bullet, tower->BulletStartPoint[0]->GetComponentLocation(), FRotator::ZeroRotator);
+	if (BaddiesInRange.Num() > 0)
+	{
+		ABaddies* FirstBaddie = BaddiesInRange[0];
+		AActor* FirstBaddieActor = Cast<AActor>(FirstBaddie);
+
+		if (FirstBaddieActor)
+		{
+			SpawnedBullet->Setup(FirstBaddieActor);
+		}
+	}
 }
