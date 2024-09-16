@@ -2,6 +2,8 @@
 
 
 #include "Baddies.h"
+#include "GameManager.h"
+#include "TDGameInstance.h"
 
 // Sets default values
 ABaddies::ABaddies()
@@ -14,6 +16,18 @@ ABaddies::ABaddies()
 void ABaddies::ChangeLife(int lifeDifferenceValue)
 {
 	life -= lifeDifferenceValue;
+	UTDGameInstance* MyGameInstance = Cast<UTDGameInstance>(GetWorld()->GetGameInstance());
+
+	if (MyGameInstance)
+	{
+		AGameManager* GameManager = MyGameInstance->GetGameManager();
+		if (GameManager)
+		{
+			// Manipuler l'or
+			GameManager->AddGold(100);
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Actor Location: %i"), GameManager->GetPlayerGold()));
+		}
+	}
 	if (life <= 0)
 	{
 		Kill();
