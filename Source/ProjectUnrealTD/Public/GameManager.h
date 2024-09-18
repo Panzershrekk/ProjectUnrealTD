@@ -4,15 +4,19 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Tower.h"
 #include "GameManager.generated.h"
 
 UCLASS()
-class PROJECTUNREALTD_API AGameManager : public AActor
+class PROJECTUNREALTD_API AGameManager : public APlayerController
 {
     GENERATED_BODY()
 
 private:
     int32 PlayerGold;
+    TSubclassOf<ATower> SelectedTowerClass;
+    ATower* GhostTower;
+    bool bIsPlacingTower;
 
 public:
     UFUNCTION(BlueprintCallable, Category = "Gold")
@@ -29,6 +33,13 @@ public:
     {
         PlayerGold = 0;
     }
+
+    UFUNCTION(BlueprintCallable, Category = "Tower")
+    void SetBuyableSelectedTower(TSubclassOf<ATower> TowerClass);
+    UFUNCTION(BlueprintCallable, Category = "Tower")
+    void CancelBuyableTowerSelection();
+    UFUNCTION(BlueprintCallable, Category = "Tower")
+    void SpawnGhostTower(TSubclassOf<ATower> TowerClass);
 
 protected:
     // Called when the game starts or when spawned

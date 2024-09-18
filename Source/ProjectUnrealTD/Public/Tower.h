@@ -36,8 +36,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	class USphereComponent* RangeSphere;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
-	USceneComponent* DummyMuzzle;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ShopConfig")
+	float price;
+
 
 	UFUNCTION()
 	void GetBaddiesInRange(TArray<ABaddies*>& OutBaddies);

@@ -24,8 +24,8 @@ void ABaddies::ChangeLife(int lifeDifferenceValue)
 		if (GameManager)
 		{
 			// Manipuler l'or
-			GameManager->AddGold(100);
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Actor Location: %i"), GameManager->GetPlayerGold()));
+			GameManager->AddGold(lifeDifferenceValue);
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Actor Location: %i"), GameManager->GetPlayerGold()));
 		}
 	}
 	if (life <= 0)
