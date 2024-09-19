@@ -15,10 +15,14 @@ class PROJECTUNREALTD_API AGameManager : public APlayerController
 private:
     int32 PlayerGold;
     TSubclassOf<ATower> SelectedTowerClass;
-    ATower* GhostTower;
     bool bIsPlacingTower;
 
+    DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnKillPlayerSignature);
 public:
+
+    UPROPERTY(BlueprintReadOnly, Category = "Tower")
+    ATower* GhostTower;
+
     UFUNCTION(BlueprintCallable, Category = "Gold")
     int32 GetPlayerGold() const { return PlayerGold; }
 
@@ -35,13 +39,22 @@ public:
     }
 
     UFUNCTION(BlueprintCallable, Category = "Tower")
+    bool IsTowerBeingPlaced() const { return bIsPlacingTower; }
+
+    UFUNCTION(BlueprintCallable, Category = "Tower")
     void SetBuyableSelectedTower(TSubclassOf<ATower> TowerClass);
     UFUNCTION(BlueprintCallable, Category = "Tower")
     void CancelBuyableTowerSelection();
     UFUNCTION(BlueprintCallable, Category = "Tower")
-    void SpawnGhostTower(TSubclassOf<ATower> TowerClass);
+    void SpawnGhostTower();
+    UFUNCTION(BlueprintCallable, Category = "Tower")
+    void DespawnGhostTower();
+
+    UPROPERTY(BlueprintAssignable, Category = "Events")
+    FOnKillPlayerSignature OnSelectTowerToBuy;
 
 protected:
     // Called when the game starts or when spawned
     virtual void BeginPlay() override;
+
 };

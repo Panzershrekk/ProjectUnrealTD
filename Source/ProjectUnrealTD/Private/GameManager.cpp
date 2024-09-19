@@ -28,7 +28,9 @@ void AGameManager::SetBuyableSelectedTower(TSubclassOf<ATower> TowerClass)
 
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("TOWER IS SET")));
 	}
+	OnSelectTowerToBuy.Broadcast();
 }
+
 
 void AGameManager::CancelBuyableTowerSelection()
 {
@@ -37,17 +39,28 @@ void AGameManager::CancelBuyableTowerSelection()
 	bIsPlacingTower = false;
 
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("TOWER IS RESET")));
+	OnSelectTowerToBuy.Broadcast();
+
 }
 
-void AGameManager::SpawnGhostTower(TSubclassOf<ATower> TowerClass)
+void AGameManager::SpawnGhostTower()
 {
-	if (TowerClass)
+	if (SelectedTowerClass)
 	{
-		GhostTower = GetWorld()->SpawnActor<ATower>(TowerClass, FVector::ZeroVector, FRotator::ZeroRotator);
+		GhostTower = GetWorld()->SpawnActor<ATower>(SelectedTowerClass, FVector::ZeroVector, FRotator::ZeroRotator);
 		if (GhostTower)
 		{
 			GhostTower->SetActorEnableCollision(false);
 			//GhostTower->SetTransparency(true);
 		}
+	}
+}
+
+void AGameManager::DespawnGhostTower()
+{
+	if (GhostTower)
+	{
+		GhostTower->Destroy();
+		GhostTower = nullptr;
 	}
 }
