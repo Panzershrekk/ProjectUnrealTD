@@ -14,12 +14,12 @@ class PROJECTUNREALTD_API AGameManager : public APlayerController
 
 private:
     int32 PlayerGold;
-    TSubclassOf<ATower> SelectedTowerClass;
     bool bIsPlacingTower;
 
     DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnKillPlayerSignature);
 public:
-
+    UPROPERTY(BlueprintReadOnly, Category = "Tower")
+    TSubclassOf<ATower> SelectedTowerClass;
     UPROPERTY(BlueprintReadOnly, Category = "Tower")
     ATower* GhostTower;
 
@@ -49,6 +49,9 @@ public:
     void SpawnGhostTower();
     UFUNCTION(BlueprintCallable, Category = "Tower")
     void DespawnGhostTower();
+    UFUNCTION(BlueprintCallable, Category = "Tower")
+    void BuyAndSpawnSelectedTower(FVector location, FRotator rotation);
+
 
     UPROPERTY(BlueprintAssignable, Category = "Events")
     FOnKillPlayerSignature OnSelectTowerToBuy;
